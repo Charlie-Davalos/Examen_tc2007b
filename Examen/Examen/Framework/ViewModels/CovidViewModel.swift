@@ -13,7 +13,7 @@ class CovidViewModel: ObservableObject {
     private let repository = CovidRepository()
 
     func loadCovidData() {
-        let countries = ["Mexico", "USA", "Canada", "India", "Brazil", "Germany"]  // Aquí puedes agregar más países
+        let countries = ["Mexico", "USA", "Canada", "India", "Brazil", "Germany", "Croatia", "Argentina", "Russia", "France", "Spain", "China", "Japan", "Nicaragua", "Italy", "Colombia"]  // Aquí puedes agregar más países
         repository.getCovidData(for: countries) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
