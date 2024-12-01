@@ -5,13 +5,14 @@
 //  Created by Carlos Octavio Dávalos Batres on 25/11/24.
 //
 
-
 import Foundation
 
+/// Servicio para realizar solicitudes a la API de COVID
 class CovidService {
     private let apiKey = "GvW+LZ4VmT0kE9TUaaUInA==xDRx5TSYr1hEEaUq"
     private let baseURL = "https://api.api-ninjas.com/v1/covid19?country=Mexico"
     
+    /// Realiza la solicitud a la API y devuelve los datos decodificados
     func fetchCovidData(completion: @escaping (Result<[CovidData], Error>) -> Void) {
         guard let url = URL(string: baseURL) else {
             print("[ERROR] URL inválida")
@@ -19,7 +20,7 @@ class CovidService {
             return
         }
         
-        print("[INFO] Realizando solicitud a URL:", url)
+        print("[INFO] URL generada correctamente: \(url)")
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -27,7 +28,7 @@ class CovidService {
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("[ERROR] Error de red:", error.localizedDescription)
+                print("[ERROR] Error de red: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
@@ -38,13 +39,14 @@ class CovidService {
                 return
             }
             
+            print("[INFO] Datos crudos recibidos: \(String(data: data, encoding: .utf8) ?? "Datos no legibles")")
+            
             do {
-                print("[INFO] Datos recibidos (JSON):", String(data: data, encoding: .utf8) ?? "No legible")
                 let covidData = try JSONDecoder().decode([CovidData].self, from: data)
-                print("[SUCCESS] Datos decodificados exitosamente:", covidData)
+                print("[SUCCESS] Datos decodificados exitosamente: \(covidData)")
                 completion(.success(covidData))
             } catch {
-                print("[ERROR] Falló la decodificación de datos:", error.localizedDescription)
+                print("[ERROR] Error al decodificar datos: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }

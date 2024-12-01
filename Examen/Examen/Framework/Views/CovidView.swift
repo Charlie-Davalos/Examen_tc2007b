@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Vista principal que muestra los datos de COVID
 struct CovidView: View {
     @StateObject private var viewModel = CovidViewModel()
 
@@ -19,7 +20,6 @@ struct CovidView: View {
                     Text("Región: \(data.region.isEmpty ? "N/A" : data.region)")
                         .font(.subheadline)
                     
-                    // Mostramos el primer caso del diccionario de fechas
                     if let firstCase = data.cases.first {
                         Text("Fecha: \(firstCase.key)")
                         Text("Total casos: \(firstCase.value.total)")
@@ -31,12 +31,18 @@ struct CovidView: View {
             }
             .navigationTitle("Covid Data")
             .onAppear {
-                print("[INFO] Vista cargada, iniciando llamada a la API...")
+                print("[INFO] Vista cargada, llamando a ViewModel...")
                 viewModel.loadCovidData()
             }
             .alert(item: $viewModel.errorMessage) { error in
                 Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
             }
         }
+    }
+}
+
+struct CovidView_Previews: PreviewProvider {
+    static var previews: some View {
+        CovidView()
     }
 }
