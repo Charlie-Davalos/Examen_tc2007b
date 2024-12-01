@@ -6,21 +6,19 @@
 //
 
 import Foundation
-import SwiftUI
 
-/// ViewModel que conecta los datos de COVID con la vista
 class CovidViewModel: ObservableObject {
-    @Published var covidData: [CovidData] = []  // Datos que se actualizarán en la vista
-
+    @Published var covidData: [CovidData] = []
+    
     private let repository = CovidRepository()
 
     func loadCovidData() {
-        let countries = ["USA"]  // Puedes agregar más países según sea necesario
+        let countries = ["Mexico", "USA", "Canada", "India", "Brazil", "Germany"]  // Aquí puedes agregar más países
         repository.getCovidData(for: countries) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    self?.covidData = data  // Asignamos los datos obtenidos al arreglo
+                    self?.covidData = data
                 case .failure(let error):
                     print("[ERROR] Error al cargar los datos: \(error.localizedDescription)")
                 }
