@@ -11,17 +11,30 @@ import Foundation
 class CovidRepository {
     private let service = CovidService()
     
-    /// Obtiene datos de COVID desde el servicio
-    func getCovidData(completion: @escaping (Result<[CovidData], Error>) -> Void) {
-        print("[INFO] Iniciando obtención de datos desde el servicio...")
-        service.fetchCovidData { result in
-            switch result {
-            case .success(let data):
-                print("[SUCCESS] Datos obtenidos del servicio: \(data)")
-                completion(.success(data))
-            case .failure(let error):
-                print("[ERROR] Error desde el servicio: \(error.localizedDescription)")
-                completion(.failure(error))
+    /// Obtiene datos de COVID para una lista de países
+    func getCovidData(for countries: [String], completion: @escaping (Result<[CovidData], Error>) -> Void) {
+        var results: [CovidData] = []
+        var errors: [Error] = []
+        let group = DispatchGroup()
+        
+        for country in countries {
+            group.enter()
+            service.fetchCovidData(for: country) { result in
+                switch result {
+                case .success(let data):
+                    results.append(data)
+                case .failure(let error):
+                    errors.append(error)
+                }
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            if errors.isEmpty {
+                completion(.success(results))
+            } else {
+                completion(.failure(NSError(domain: "Some requests failed", code: 0, userInfo: nil)))
             }
         }
     }

@@ -9,29 +9,20 @@ import Foundation
 import SwiftUI
 
 /// ViewModel que conecta los datos de COVID con la vista
-class CovidViewModel: ObservableObject, CovidRequirement {
-    @Published var covidData: [CovidData] = []
-    @Published var errorMessage: ErrorMessage? = nil
-    
-    struct ErrorMessage: Identifiable {
-        let id = UUID()
-        let message: String
-    }
-    
+class CovidViewModel: ObservableObject {
+    @Published var covidData: [CovidData] = []  // Datos que se actualizarán en la vista
+
     private let repository = CovidRepository()
-    
-    /// Carga los datos de COVID desde el repositorio
+
     func loadCovidData() {
-        print("[INFO] Iniciando carga de datos en ViewModel...")
-        repository.getCovidData { [weak self] result in
+        let countries = ["USA"]  // Puedes agregar más países según sea necesario
+        repository.getCovidData(for: countries) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    print("[SUCCESS] Datos recibidos en ViewModel: \(data)")
-                    self?.covidData = data
+                    self?.covidData = data  // Asignamos los datos obtenidos al arreglo
                 case .failure(let error):
-                    print("[ERROR] Error en ViewModel: \(error.localizedDescription)")
-                    self?.errorMessage = ErrorMessage(message: "Error al cargar los datos: \(error.localizedDescription)")
+                    print("[ERROR] Error al cargar los datos: \(error.localizedDescription)")
                 }
             }
         }

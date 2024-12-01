@@ -10,9 +10,11 @@ import SwiftData
 
 @main
 struct ExamenApp: App {
+    @StateObject private var viewModel = CovidViewModel()  // Inicializamos el ViewModel aquí
+
     var body: some Scene {
         WindowGroup {
-            CovidView()
+            CovidView(viewModel: viewModel)  // Pasamos el ViewModel a la vista
         }
     }
 }
