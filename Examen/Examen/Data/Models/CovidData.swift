@@ -7,12 +7,13 @@
 
 import Foundation
 
+/// Representa la estructura de los datos de COVID recibidos de la API
 struct CovidData: Decodable {
     let country: String
-    let region: String
-    let cases: [String: CaseData] // Diccionario con las fechas como claves
+    let cases: [String: CaseData]  // Diccionario de fechas con los datos de casos
 }
 
+/// Detalle de casos en una fecha específica
 struct CaseData: Decodable {
     let total: Int
     let new: Int
