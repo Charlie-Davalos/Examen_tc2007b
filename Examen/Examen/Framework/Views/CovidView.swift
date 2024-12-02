@@ -15,7 +15,7 @@ struct CovidView: View {
         NavigationView {
             ZStack {
                 // Imagen de fondo
-                Image("background_image")
+                Image("covid_background")
                     .resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
@@ -38,12 +38,18 @@ struct CovidView: View {
                                         selection: $selectedCountry
                                     ) {
                                         HStack {
+                                            // Bandera del país
+                                            Text(countryFlagEmoji(for: covidData.country))
+                                                .font(.system(size: 30)) // Tamaño de la bandera
+
+                                            // Nombre del país
                                             Text(covidData.country)
                                                 .font(.headline)
                                                 .foregroundColor(.white)
-                                                .padding()
+                                                .padding(.leading, 10)
                                         }
-                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .frame(maxWidth: 300) // Limitar el ancho de las filas
                                         .background(LinearGradient(
                                             colors: [Color.blue, Color.purple],
                                             startPoint: .leading,
@@ -65,6 +71,40 @@ struct CovidView: View {
             }
             .navigationBarTitle("Seleccionar país", displayMode: .inline)
         }
+    }
+
+    // Función para generar el emoji de la bandera a partir del nombre del país
+    func countryFlagEmoji(for countryName: String) -> String {
+        let isoCountryCode = getCountryCode(for: countryName)
+        let base: UInt32 = 127397 // Base para generar banderas
+        var emoji = ""
+        for scalar in isoCountryCode.unicodeScalars {
+            emoji.unicodeScalars.append(UnicodeScalar(base + scalar.value)!)
+        }
+        return emoji
+    }
+
+    // Función para obtener el código ISO del país
+    func getCountryCode(for countryName: String) -> String {
+        let countryMapping: [String: String] = [
+            "Mexico": "MX",
+            "United States": "US",
+            "Canada": "CA",
+            "India": "IN",
+            "Brazil": "BR",
+            "Germany": "DE",
+            "Croatia": "HR",
+            "Argentina": "AR",
+            "Russia": "RU",
+            "France": "FR",
+            "Spain": "ES",
+            "China": "CN",
+            "Japan": "JP",
+            "Nicaragua": "NI",
+            "Italy": "IT",
+            "Colombia": "CO"
+        ]
+        return countryMapping[countryName] ?? "XX" // Devuelve "XX" si no se encuentra
     }
 }
 
